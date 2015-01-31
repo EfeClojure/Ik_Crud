@@ -1,0 +1,69 @@
+This program is about class-mates. The program will
+display a main menu where the user can: 
+
+Add , Update , Delete , Find a class-mate and then 
+Exit the program.
+
+Each class-mate will be described by
+first name, last name and a role. Umm ... that's it.
+
+The following shows the pseudocode for the entire program.
+
+	Features:
+		Show Class mates
+			Pretty print all existing records in
+			the agreed format
+		Add Class mates
+			Request inputs (first, last, role)
+			Test Validity of inputs
+			Check if input already exists
+				Print message(Record already exist)
+				Reload program
+			Add New Record
+				Print message
+				Show All Records
+				reload_app
+		Update Class mates
+			Request inputs (first, last)
+			Test Validity of inputs
+			check if inputs exists in a record
+				print_record
+				ask for input replacements
+				test validity of input replacements
+				insert input replacements
+				print success
+				print_records
+				reload_app // can't figure out how to reload app
+		Find Class mate
+			display_sub_menu = {
+				'f' : 'First Name'
+				'l' : 'Last Name'
+				'r' : 'Role'
+				'v' : 'Full Name'
+			}
+			request menu value
+			test if input is valid
+				request input
+					test if input[s] is/are valid
+						check if input exists
+						print record[s]
+				Print input doesn't exist
+		Delete Class mates
+			request inputs (first, last)
+			test validity of input
+			check existence of input
+				Delete record
+				print success message
+				Show all class mates
+				reload_app
+			Print Class mate doesn't exist
+				reload_app
+		Exit:
+			return sys.exit(0)
+
+
+	Main Program order
+		Display main menu
+		Ask for input (menu option)
+		Test input validity with respect to main menu
+		Execute selected path way
