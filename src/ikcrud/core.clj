@@ -4,6 +4,8 @@
   (:import [jline.console ConsoleReader]))
 
 
+;;; This is what we want to see when the 
+;;; program first runs
 (def main-options ["[S] - Show all class mates" 
                    "[A] - Add new class mate" 
                    "[U] - Edit a class mate"
@@ -11,23 +13,38 @@
                    "[F] - Find class mate" 
                    "[E] - Exit"])
 
+;;; When a user decides to delete a class mate, 
+;;; we need to ask the user whether by first
+;;; name or last name of the class mate
 (def delete-options ["[F] - First name"
                      "[L] - Last name"])
 
+;;; Similarly, when the user decides to find 
+;;; a class mate, we need to ask whether by
+;;; first name, last name, role or full name
 (def find-options ["[F] - First name"
                    "[L] - Last name"
                    "[R] - Role"
                    "[V] - Full name"])
 
 
+;;; This defines the data associated with a 
+;;; class mate. We only want to be concerned
+;;; with the first name, last name and role
 (defrecord ClassMate [first last role])
 
+
+;;; This serves as an in-memory database
+;;; which has been initialized with some 
+;;; class mates.
 (def class-mates-db (atom [(ClassMate. "Augustine" "Ogwo" "ClassBlogger")
                           (ClassMate. "Chibuike" "Ugwoke" "Class Rep")
                           (ClassMate. "Chibuzo" "Okolo" "Class Programmer")
                           (ClassMate. "Chima" "Okere" "Class Clown")
                           (ClassMate. "Chimere" "Ugwebgbu" "Class Salesman")]))
 
+;;; This displays the details for a ClassMate for
+;;; our pleasure
 (defn print-mate [the-mate]
   (if the-mate
     (println ">>>" (:first the-mate) " " (:last the-mate) 
@@ -35,7 +52,7 @@
     (println ">>>No class mate to print")))
 
 
-;;; For showing class mates
+;;; For showing all class mates in the db.
 (defn show-all-class-mates []
   (println "\nShowing all class mates ...")
   
@@ -63,17 +80,19 @@
         (show-all-class-mates)))))
 
 
-;;; This is getting the first name and the last name
-;;; and the role for when the user wants to add a class mate
+;;; This will prompt the user for a string.
+;;; It will continue to prompt the user until
+;;; a valid string is inputted
 (defn get-name-from-user [field-title]
   (let [msg-prompt (str "Please enter the " field-title "\n")
         cr (ConsoleReader.)
         the-input (.readLine cr msg-prompt)]
     (cond 
       (empty? the-input) (recur field-title)
-      (.equalsIgnoreCase the-input "Z") :main-menu 
       :else the-input)))
 
+;;; This just tells us if class mate with the 
+;;; first name or last name exists.
 (defn class-mate-exists? [first-name last-name]
   (let [found (for [class-mate @class-mates-db
                     :when (or (.equalsIgnoreCase (:first class-mate) 
@@ -84,11 +103,17 @@
     (if (> (count found) 0)
       true false)))
 
+
 (declare get-name-for-edit get-new-edit-names)
 
-;;; For editing class mate details
+;;; For editing class mate details.
+;;; First I ask the user how he wants to find
+;;; the user to update. After that is gotten,
+;;; we proceed to get the name to find the
+;;; user to edit.
 (defn edit-class-mate []
-  (println "Update menu - by [F] - First name or [L] - Last Name")
+  (println "Update Menu - " " How to find the user to edit. "
+           "By [F] - First name" " or by [L] - Last name")
   (let [cr (ConsoleReader.)
         user-input (.readCharacter cr)]
     (case (Character/toUpperCase user-input)
@@ -100,6 +125,10 @@
              true)
      false)))
 
+
+;;; Here, after we've gotten the name of the class-mate
+;;; to edit, we have to get the new data for the 
+;;; class-mate
 (defn get-name-for-edit [by-first by-last]
   (let [cr (ConsoleReader.)
         user-input (.readLine cr)]
@@ -115,6 +144,10 @@
                            (get-new-edit-names nil :last user-input)
                            true)))))
 
+
+;;; The way I edit the details of a class mate 
+;;; is to first remove the class-mate from the db
+;;; then add a new class-mate with the new data. 
 (defn get-new-edit-names [first-name-edit last-name-edit 
                           the-name] 
   (let [first-name (get-name-from-user "First name")
